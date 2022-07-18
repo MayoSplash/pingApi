@@ -1,8 +1,7 @@
 from flask import Flask
-from flask_restful import Api, Resource
+from flask_restful import Api, Resource, request
 import platform
 import subprocess
-from pythonping import ping
 
 app = Flask(__name__)
 api = Api(prefix="/api")
@@ -13,11 +12,10 @@ class Ping(Resource):
 
         command = ['ping', parameter, '1', ip]
         response = subprocess.call(command)
+        response = response == 0
 
-        if response == 0:
-            return True
-        else:
-            return False
+        result = {ip: response}
+        return result
 
 api.add_resource(Ping, "/<ip>")
 api.init_app(app)
