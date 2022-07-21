@@ -19,7 +19,7 @@ def verify_password(username, password):
         return username
 
 
-@app.route('/api/json', methods=['POST'])
+@app.route('/api/get-json', methods=['POST'])
 @auth.login_required
 def post_query_result():
     data = request.get_json()
@@ -31,7 +31,8 @@ def post_query_result():
         response[ip] = result
     return response
 
-@app.route('/api/check/<ip>', methods=['GET'])
+'''
+@app.route('/api/<ip>', methods=['GET'])
 def get_query_result(ip):
     result = {}
     parameter = '-n' if platform.system().lower() == 'windows' else '-c'
@@ -39,6 +40,7 @@ def get_query_result(ip):
     response = subprocess.call(command) == 0
     result[ip] = response
     return result
+'''
 
 if __name__ == "__main__":
     app.run(debug=True, host="127.0.0.1", port=30)
