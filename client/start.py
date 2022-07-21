@@ -20,7 +20,5 @@ data = json.dumps({
 
 req = requests.post(url=url, headers=headers, data=data, auth=(username, password))
 
-print(str(req.text))
-
 with open("output.json", "w+") as output:
     output.writelines(str(req.text))

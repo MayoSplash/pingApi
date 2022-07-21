@@ -1,7 +1,10 @@
-from flask import Flask
+import csv
+
+from flask import Flask, Response
 from flask_restful import request
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
+import pandas
 import platform
 import subprocess
 
@@ -12,6 +15,7 @@ users = {
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
+
 @auth.verify_password
 def verify_password(username, password):
     if username in users and \
@@ -21,7 +25,7 @@ def verify_password(username, password):
 
 @app.route('/api/get-json', methods=['POST'])
 @auth.login_required
-def post_query_result():
+def post_query_json():
     data = request.get_json()
     response = {}
     for ip in data["ip"]:
@@ -31,7 +35,7 @@ def post_query_result():
         response[ip] = result
     return response
 
-'''
+
 @app.route('/api/<ip>', methods=['GET'])
 def get_query_result(ip):
     result = {}
@@ -40,7 +44,7 @@ def get_query_result(ip):
     response = subprocess.call(command) == 0
     result[ip] = response
     return result
-'''
+
 
 if __name__ == "__main__":
-    app.run(debug=True, host="127.0.0.1", port=30)
+    app.run(debug=True, host="0.0.0.0", port=30)
