@@ -23,13 +23,13 @@ def verify_password(username, password):
 @auth.login_required
 def post_query_result():
     data = request.get_json()
-    result = {}
+    response = {}
     for ip in data["ip"]:
         parameter = '-n' if platform.system().lower() == 'windows' else '-c'
         command = ['ping', parameter, '1', ip]
-        response = subprocess.call(command) == 0
-        result[ip] = response
-    return result
+        result = subprocess.call(command) == 0
+        response[ip] = result
+    return response
 
 @app.route('/api/check/<ip>', methods=['GET'])
 def get_query_result(ip):
