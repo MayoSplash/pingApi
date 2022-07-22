@@ -1,29 +1,27 @@
-import csv
-
-from flask import Flask, Response
+from flask import Flask
 from flask_restful import request
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
-import pandas
 import platform
 import subprocess
-
-users = {
-    "john": generate_password_hash("hello")
-}
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
+#Словарь с данными аутентификации
+users = {
+    "john": generate_password_hash("hello")
+}
 
+#Верификация пользователей из словаря выше
 @auth.verify_password
 def verify_password(username, password):
     if username in users and \
             check_password_hash(users.get(username), password):
         return username
 
-
-@app.route('/api/get-json', methods=['POST'])
+#Обработка пост-запроса
+@app.route('/api/get-result', methods=['POST'])
 @auth.login_required
 def post_query_json():
     data = request.get_json()
@@ -35,7 +33,7 @@ def post_query_json():
         response[ip] = result
     return response
 
-
+#Обработка гет-запроса
 @app.route('/api/<ip>', methods=['GET'])
 def get_query_result(ip):
     result = {}
@@ -45,6 +43,6 @@ def get_query_result(ip):
     result[ip] = response
     return result
 
-
+#Запуск
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=30)
